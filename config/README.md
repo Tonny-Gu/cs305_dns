@@ -1,6 +1,10 @@
 # Data in Naked DNS - Configuration
 
-本目录保存项目相关的全局配置参数
+#### 目录结构
+
+- `本目录` 保存项目相关的全局配置参数
+
+- `private` 保存用户备份参数
 
 
 
