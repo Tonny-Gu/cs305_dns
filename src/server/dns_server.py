@@ -60,9 +60,9 @@ class DNSServer:
             self.receive.put(dns_encode.decode_domain(data))
 
         if self.send.empty():
-            return "--NODATA--"
+            return ".0"
         else:
-            return dns_encode.encode_txt(self.send.get())
+            return dns_encode.encode_txt(self.send.get()) + "." + str( self.send.qsize() )
 
 
 if __name__ == '__main__':

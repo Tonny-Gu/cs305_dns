@@ -7,6 +7,7 @@ from typing import Tuple
 import dns.rdatatype
 import dns.resolver
 import random
+import threading
 
 import dns_encode
 from time_limits import time_limited, TimeoutException
@@ -26,28 +27,31 @@ class DNSClient:
         self.thread: Thread or None = None
 
         self.noDataReceive = False
+        self.remain_pkg_num = 0
 
     def start(self):
         if self.thread is None:
             self.thread = Thread(target=self.run)
             self.thread.start()
 
+    def thread_tx(self):
+        res, res_data = self.make_request()
+
+        label_pos = res_data.rindex(".")
+        label = res_data[label_pos + 1:]
+        data = res_data[:label_pos]
+
+        self.remain_pkg_num = int(label)
+
+        if len(data)>0:
+            self.receive.put( dns_encode.decode_txt(data) )
+        
     def run(self):
-
-        @time_limited(3)
-        def to_run():
-            res, res_data = self.make_request()
-            self.noDataReceive = res_data == "--NODATA--"
-            if res_data != "--NODATA--":
-                self.receive.put(dns_encode.decode_txt(res_data))
-            if self.noDataReceive and self.send.empty():
-                time.sleep(0.5)
-
         while not self.isClosed:
-            try:
-                to_run()
-            except TimeoutException:
-                print("timeout")
+            for i in range(self.remain_pkg_num+1):
+                timer = threading.Timer(0, self.thread_tx)
+                timer.start()
+            time.sleep(0.1)
 
     def close(self):
         self.isClosed = True
