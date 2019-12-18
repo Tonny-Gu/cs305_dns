@@ -28,7 +28,9 @@ class DNSServer:
     def run(self):
         while not self.isClosed:
             try:
+                print("listen")
                 data, addr = self.sock.recvfrom(1024)
+                print("receive")
                 result = self.handle(data)
                 self.sock.sendto(result, addr)
             except socket.timeout:
