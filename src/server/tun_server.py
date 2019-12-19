@@ -21,9 +21,14 @@ if __name__ == '__main__':
             print("will send " + str(len(to_send)))
 
 
-    Thread(target=read).start()
+    tun_thread = Thread(target=read)
+    tun_thread.start()
 
     while True:
-        to_receive: bytes = server.receive.get()
-        tun.write(to_receive)
-        print("receive " + str(len(to_receive)))
+        try:
+            to_receive: bytes = server.receive.get()
+            tun.write(to_receive)
+            print("receive " + str(len(to_receive)))
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt, exit")
+            server.close()

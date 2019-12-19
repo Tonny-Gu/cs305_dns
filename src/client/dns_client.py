@@ -41,7 +41,12 @@ class DNSClient:
         while not self.isClosed:
             data, addr = self.sock.recvfrom(1024)
             res: dns.message.Message = dns.message.from_wire(data)
-            res_data: str = res.answer[0].items[0].strings[0].decode()
+
+            try:
+                res_data: str = res.answer[0].items[0].strings[0].decode()
+            except IndexError:
+                print("mistake data receive")
+                continue
 
             label_pos = res_data.rindex(".")
             label = res_data[label_pos + 1:]
