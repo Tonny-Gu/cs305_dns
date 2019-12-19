@@ -1,6 +1,8 @@
 from functools import reduce
 import base64
+import json
 
+config = {}
 
 def encode_domain(data: bytes) -> str:
     assert len(data) <= 100, "data is longer than 100 bytes"
@@ -23,6 +25,11 @@ def encode_txt(data: bytes) -> str:
 def decode_txt(data: str) -> bytes:
     return base64.b64decode(data)
 
+def load_config():
+    global config
+    with open("../config/config.json", "r") as config_file:
+        config = json.loads( "".join(config_file.readlines()) )
+    return config
 
 if __name__ == '__main__':
     data = b'1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'

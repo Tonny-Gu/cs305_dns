@@ -7,7 +7,7 @@ import dns.rdata
 import dns.rdataclass
 import dns.rdatatype
 
-import dns_encode
+import dns_util
 
 
 class DNSServer:
@@ -59,12 +59,12 @@ class DNSServer:
         label = req_data[label_pos + 1:]
         data = req_data[:label_pos]
         if label == "msg":
-            self.receive.put(dns_encode.decode_domain(data))
+            self.receive.put(dns_util.decode_domain(data))
 
         if self.send.empty():
             return ".0"
         else:
-            return dns_encode.encode_txt(self.send.get()) + "." + str( self.send.qsize() )
+            return dns_util.encode_txt(self.send.get()) + "." + str( self.send.qsize() )
 
 
 if __name__ == '__main__':
