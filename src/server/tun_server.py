@@ -22,6 +22,7 @@ if __name__ == '__main__':
 
 
     tun_thread = Thread(target=read)
+    tun_thread.setDaemon(True)
     tun_thread.start()
 
     while True:
@@ -32,3 +33,4 @@ if __name__ == '__main__':
         except KeyboardInterrupt:
             print("KeyboardInterrupt, exit")
             server.close()
+            break
