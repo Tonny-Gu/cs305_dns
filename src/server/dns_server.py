@@ -1,10 +1,12 @@
+import socket
 from queue import Queue
 from threading import Thread
+
 import dns.message
 import dns.rdata
 import dns.rdataclass
 import dns.rdatatype
-import socket
+
 import dns_encode
 
 
