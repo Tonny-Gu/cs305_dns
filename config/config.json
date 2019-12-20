@@ -1,14 +1,33 @@
 {
     "tun": {
         "server": {
-            "ifname": "tun0",
-            "ip_addr": "192.168.127.3"
+            "ifname": "tun1",
+            "ip_addr": "192.168.127.3",
+            "netmask": "255.255.255.0",
+            "mtu": 100
         },
         "client": {
-            "ifname": "tun0",
-            "ip_addr": "192.168.127.2"
+            "ifname": "tun1",
+            "ip_addr": "192.168.127.2",
+            "netmask": "255.255.255.0",
+            "mtu": 100
+        }
+    },
+    "dns": {
+        "own_domain": "group-25.cs305.fun",
+        "public_dns": "120.78.166.34",
+        "socks5_port": 4080
+    },
+    "misc": {
+        "client": {
+            "poll_delay": 0.05,
+            "buffer_flush_delay": 0.005,
+            "py_exec_cmd": "python3.6",
+            "pip_exec_cmd": "pip3.6"
         },
-        "netmask": "255.255.255.0",
-        "mtu": 148
+        "server": {
+            "py_exec_cmd": "python3",
+            "pip_exec_cmd": "pip3"
+        }
     }
 }

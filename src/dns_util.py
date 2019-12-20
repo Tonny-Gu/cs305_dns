@@ -1,6 +1,12 @@
 from functools import reduce
 import base64
 import json
+import pytun
+import client.dns_client
+import server.dns_server
+from threading import Thread
+import time
+import os
 
 config = {}
 
@@ -29,7 +35,65 @@ def load_config():
     global config
     with open("../config/config.json", "r") as config_file:
         config = json.loads( "".join(config_file.readlines()) )
+
+def get_config():
     return config
+
+load_config()
+
+def get_tun_if(role="clients"):
+    tun_config = get_config()["tun"][role]
+    print("TUN: Init. Param: ", tun_config)
+    tun = pytun.TunTapDevice(name=tun_config["ifname"], flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
+    tun.addr = tun_config["ip_addr"]
+    tun.netmask = tun_config["netmask"]
+    tun.mtu = tun_config["mtu"]
+    tun.up()
+    return tun
+
+class DNSnode:
+    def __init__(self, role="client"):
+        self.tun = get_tun_if(role)
+        dns_config = get_config()["dns"]
+        misc_config = get_config()["misc"][role]
+
+        if role == "client":
+            self.node = client.dns_client.DNSClient(dns_config["own_domain"], dns_config["public_dns"], misc_config["poll_delay"], misc_config["buffer_flush_delay"])
+        elif role == "server":
+            self.node = server.dns_server.DNSServer(dns_config["own_domain"])
+        self.node.start()
+
+        self.rx_thread = Thread(target=self.read)
+        self.rx_thread.setDaemon(True)
+        self.rx_thread.start()
+
+        self.tx_thread = Thread(target=self.write)
+        self.tx_thread.setDaemon(True)
+        self.tx_thread.start()
+
+
+    def read(self):
+        while True:
+            to_send: bytes = self.tun.read(self.tun.mtu)
+            self.node.send.put(to_send)
+            # print("will send " + str(len(to_send)))
+
+    def write(self):
+        while True:
+            to_receive: bytes = self.node.receive.get()
+            self.tun.write(to_receive)
+            # print("receive " + str(len(to_receive)))
+    
+    def loop_forever(self):
+        while True:
+            try:
+                print("TUN:")
+                os.system("ifconfig {} | grep packets".format(self.tun.name))
+                time.sleep(1)
+            except KeyboardInterrupt:
+                print("KeyboardInterrupt, exit")
+                self.node.close()
+                break
 
 if __name__ == '__main__':
     data = b'1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
