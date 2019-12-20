@@ -26,7 +26,6 @@ class DNSClient:
         self.send_thread: Thread or None = None
         self.recv_thread: Thread or None = None
         self.reload_thread: Thread or None = None
-        self.print_thread: Thread or None = None
 
         self.remain_pkg_num = 0
         self.remain_pkg_num_reload = 0
@@ -38,17 +37,11 @@ class DNSClient:
 
         self.tx_count = 0
         self.rx_count = 0
-        self.reload_count = 0
     
     def reload(self):
         while not self.isClosed:
             self.remain_pkg_num = self.remain_pkg_num_reload + 1
             time.sleep(self.poll_delay)
-    
-    def print_info(self):
-        while not self.isClosed:
-            print("DNS: RX packets: {} TX packets: {}".format(self.rx_count, self.tx_count))
-            time.sleep(1)
         
     def start(self):
         if self.send_thread is None:
@@ -60,9 +53,6 @@ class DNSClient:
         if self.reload_thread is None:
             self.reload_thread = Thread(target=self.reload)
             self.reload_thread.start()
-        if self.print_thread is None:
-            self.print_thread = Thread(target=self.print_info)
-            self.print_thread.start()
 
     def recv(self):
         while not self.isClosed:

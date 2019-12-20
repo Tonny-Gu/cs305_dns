@@ -22,6 +22,9 @@ class DNSServer:
         self.sock.bind(('0.0.0.0', 53))
         self.sock.settimeout(1)
 
+        self.tx_count = 0
+        self.rx_count = 0
+
     def start(self):
         if self.thread is None:
             self.thread = Thread(target=self.run)
@@ -30,11 +33,13 @@ class DNSServer:
     def run(self):
         while not self.isClosed:
             try:
-                print("listen")
+                # print("listen")
                 data, addr = self.sock.recvfrom(1024)
-                print("receive")
+                # print("receive")
                 result = self.handle(data)
                 self.sock.sendto(result, addr)
+                self.rx_count += 1
+                self.tx_count += 1
             except socket.timeout:
                 pass
 

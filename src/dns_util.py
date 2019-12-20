@@ -89,7 +89,8 @@ class DNSnode:
             try:
                 print("TUN:")
                 os.system("ifconfig {} | grep packets".format(self.tun.name))
-                time.sleep(1)
+                print("DNS: RX packets: {} TX packets: {}".format(self.node.rx_count, self.node.tx_count))
+                time.sleep(2)
             except KeyboardInterrupt:
                 print("KeyboardInterrupt, exit")
                 self.node.close()
