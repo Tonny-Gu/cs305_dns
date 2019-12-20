@@ -12,20 +12,19 @@ import os
 config = {}
 
 def encode_domain(data: bytes) -> str:
-    """
-    assert len(data) <= 100, "data is longer than 100 bytes"
-    f = filter(lambda it: len(it) > 0, [data[0:25], data[25:50], data[50:75], data[75:100]])
-    m = map(lambda it: it.hex(), list(f))
-    return "x" + (".x".join(list(m)))"""
-    return base62.encodebytes(data)
-
-
+    # assert len(data) <= 100, "data is longer than 100 bytes"
+    enc_data = base62.encodebytes(data)
+    segments = list(filter(lambda it: len(it) > 0, [enc_data[0:60], enc_data[60:120], enc_data[120:180]]))
+    enc_str = "x" + ".x".join(segments)
+    assert len(enc_str) <= 230
+    return enc_str
+    
 def decode_domain(data: str) -> bytes:
     """
     s = data.split(".")
     m = map(lambda it: bytes.fromhex(it[1:]), s)
     return reduce(lambda a, b: a + b, list(m), b'')"""
-    return base62.decodebytes(data)
+    return base62.decodebytes( data[1:].replace(".x", "") )
 
 
 def encode_txt(data: bytes) -> str:
