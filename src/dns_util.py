@@ -1,5 +1,6 @@
 from functools import reduce
 import base64
+import base62
 import json
 import pytun
 import client.dns_client
@@ -11,20 +12,24 @@ import os
 config = {}
 
 def encode_domain(data: bytes) -> str:
+    """
     assert len(data) <= 100, "data is longer than 100 bytes"
     f = filter(lambda it: len(it) > 0, [data[0:25], data[25:50], data[50:75], data[75:100]])
     m = map(lambda it: it.hex(), list(f))
-    return "x" + (".x".join(list(m)))
+    return "x" + (".x".join(list(m)))"""
+    return base62.encode(data)
 
 
 def decode_domain(data: str) -> bytes:
+    """
     s = data.split(".")
     m = map(lambda it: bytes.fromhex(it[1:]), s)
-    return reduce(lambda a, b: a + b, list(m), b'')
+    return reduce(lambda a, b: a + b, list(m), b'')"""
+    return base62.decode(data)
 
 
 def encode_txt(data: bytes) -> str:
-    assert len(data) <= 100, "data is longer than 100 bytes"
+    # assert len(data) <= 100, "data is longer than 100 bytes"
     return base64.b64encode(data).decode()
 
 

@@ -28,7 +28,6 @@ class DNSClient:
         self.reload_thread: Thread or None = None
 
         self.remain_pkg_num = 0
-        self.remain_pkg_num_reload = 0
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -40,7 +39,7 @@ class DNSClient:
     
     def reload(self):
         while not self.isClosed:
-            self.remain_pkg_num = self.remain_pkg_num_reload + 1
+            self.remain_pkg_num += 1
             time.sleep(self.poll_delay)
         
     def start(self):
@@ -69,11 +68,7 @@ class DNSClient:
             label = res_data[label_pos + 1:]
             data = res_data[:label_pos]
 
-            remain_pkg_num = int(label)
-            if remain_pkg_num > self.remain_pkg_num_reload:
-                self.remain_pkg_num_reload = remain_pkg_num
-                self.remain_pkg_num        = remain_pkg_num
-            else: self.remain_pkg_num_reload = remain_pkg_num
+            self.remain_pkg_num = int(label)
 
             if len(data) > 0:
                 self.receive.put(dns_util.decode_txt(data))

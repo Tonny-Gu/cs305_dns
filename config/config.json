@@ -16,11 +16,11 @@
     "dns": {
         "own_domain": "group-25.cs305.fun",
         "public_dns": "120.78.166.34",
-        "socks5_port": 4080
+        "socks5_port": 4040
     },
     "misc": {
         "client": {
-            "poll_delay": 0.05,
+            "poll_delay": 0.03,
             "buffer_flush_delay": 0.005,
             "py_exec_cmd": "python3.6",
             "pip_exec_cmd": "pip3.6"
