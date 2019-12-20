@@ -26,21 +26,15 @@ Python版本：`>= 3.6`
 
 支持`TUN/TAP` （不可部署在`OpenVZ`的容器内）
 
-需要`root`或管理员权限
+`root`或管理员权限
 
 ## Installation
 
 ### Server
 
-#### Step 1
-
 进入`config`目录修改相关配置
 
-#### Step 2
-
 关闭所有占用`53`端口的程序
-
-#### Step 3
 
 运行`script/server`目录下的`install_dep.sh`脚本
 
@@ -51,8 +45,6 @@ sudo ./install_dep.sh
 
 脚本运行结束后显示的IP地址为`Socks5`服务器地址
 
-#### Step 4
-
 运行`src`目录下的`run_server.sh`脚本
 
 ```bash
@@ -62,11 +54,7 @@ sudo ./run_server.sh
 
 ### Client
 
-#### Step 1
-
 进入`config`目录修改相关配置
-
-#### Step 2
 
 运行`script/client`目录下的`install_dep.sh`脚本
 
@@ -75,16 +63,12 @@ cd script/client
 sudo ./install_dep.sh
 ```
 
-#### Step 3
-
 运行`src`目录下的`run_client.sh`脚本
 
 ```bash
 cd src
 sudo ./run_client.sh
 ```
-
-#### Step 4
 
 填入`Socks5`服务器地址
 
