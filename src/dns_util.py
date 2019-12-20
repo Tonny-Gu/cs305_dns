@@ -17,7 +17,7 @@ def encode_domain(data: bytes) -> str:
     f = filter(lambda it: len(it) > 0, [data[0:25], data[25:50], data[50:75], data[75:100]])
     m = map(lambda it: it.hex(), list(f))
     return "x" + (".x".join(list(m)))"""
-    return base62.encode(data)
+    return base62.encodebytes(data)
 
 
 def decode_domain(data: str) -> bytes:
@@ -25,7 +25,7 @@ def decode_domain(data: str) -> bytes:
     s = data.split(".")
     m = map(lambda it: bytes.fromhex(it[1:]), s)
     return reduce(lambda a, b: a + b, list(m), b'')"""
-    return base62.decode(data)
+    return base62.decodebytes(data)
 
 
 def encode_txt(data: bytes) -> str:
