@@ -4,13 +4,13 @@
             "ifname": "tun1",
             "ip_addr": "192.168.127.3",
             "netmask": "255.255.255.0",
-            "mtu": 100
+            "mtu": 150
         },
         "client": {
             "ifname": "tun1",
             "ip_addr": "192.168.127.2",
             "netmask": "255.255.255.0",
-            "mtu": 100
+            "mtu": 150
         }
     },
     "dns": {
