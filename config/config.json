@@ -22,12 +22,12 @@
         "client": {
             "poll_delay": 0.03,
             "buffer_flush_delay": 0.005,
-            "py_exec_cmd": "python3.6",
-            "pip_exec_cmd": "pip3.6"
-        },
-        "server": {
             "py_exec_cmd": "python3",
             "pip_exec_cmd": "pip3"
+        },
+        "server": {
+            "py_exec_cmd": "python3.6",
+            "pip_exec_cmd": "pip3.6"
         }
     }
 }

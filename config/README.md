@@ -1,57 +1,41 @@
 # Data in Naked DNS - Configuration
 
-#### 目录结构
+本目录保存项目相关的全局配置参数
 
-- `本目录` 保存项目相关的全局配置参数
+## config.json
 
-- `private` 保存用户备份参数
+### tun
 
+此处保存和TUN网卡相关的设置
 
+- server
+    - ifname: 服务器TUN网卡名
+    - ip_addr: 服务器TUN网卡IP地址
+    - netmask: 服务器TUN网卡子网掩码
+    - mtu: 服务器TUN网卡MTU值
+- client
+    - ifname: 客户端TUN网卡名
+    - ip_addr: 客户端TUN网卡IP地址
+    - netmask: 客户端TUN网卡子网掩码
+    - mtu: 客户端TUN网卡MTU值
 
-## CLIENT_WAN_IFNAME
+### dns
 
-指定客户端的网络出口
+此处保存和Project DNS相关的重要设置
 
-#### 内容
+- own_domain: 私有域名
+- public_dns: 公共DNS服务器IP地址
+- socks5_port: Socks5服务端监听端口
 
-Linux udev的网络接口名称，例如：`eth0`
+### misc
 
+此处保存杂项设置
 
-
-## SERVER_WAN_IFNAME
-
-指定服务端网络出口
-
-#### 内容
-
-Linux udev的网络接口名称，例如：`eth0`
-
-
-
-## PUBLIC_DNS_SERVER_ADDR
-
-指定公共DNS服务器地址
-
-#### 内容
-
-IPv4地址
-
-
-
-## TUN_CLIENT_IP_ADDR
-
-指定客户端的TUN虚拟网卡的IP地址
-
-#### 内容
-
-IPv4地址
-
-
-
-## TUN_SERVER_IP_ADDR
-
-指定服务端的TUN虚拟网卡的IP地址
-
-#### 内容
-
-IPv4地址
+- client
+    - poll_delay: 轮询延迟（单位：s）
+    - buffer_flush_delay: 发送队列刷新延迟（单位：s）
+    - py_exec_cmd：客户端Python启动命令
+    - pip_exec_cmd: 客户端pip启动命令
+- server
+    - py_exec_cmd：服务端Python启动命令
+    - pip_exec_cmd: 服务端pip启动命令
