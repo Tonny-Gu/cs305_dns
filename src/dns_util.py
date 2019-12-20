@@ -12,11 +12,11 @@ import os
 config = {}
 
 def encode_domain(data: bytes) -> str:
-    # assert len(data) <= 100, "data is longer than 100 bytes"
+    assert len(data) <= 180, "plain data is longer than 180 bytes"
     enc_data = base62.encodebytes(data)
-    segments = list(filter(lambda it: len(it) > 0, [enc_data[0:60], enc_data[60:120], enc_data[120:180]]))
+    segments = list(filter(lambda it: len(it) > 0, [enc_data[0:60], enc_data[60:120], enc_data[120:180], enc_data[180:240]]))
     enc_str = "x" + ".x".join(segments)
-    assert len(enc_str) <= 230
+    assert len(enc_str) <= 230, "enc data is longer than 230 bytes"
     return enc_str
     
 def decode_domain(data: str) -> bytes:
@@ -24,7 +24,7 @@ def decode_domain(data: str) -> bytes:
     s = data.split(".")
     m = map(lambda it: bytes.fromhex(it[1:]), s)
     return reduce(lambda a, b: a + b, list(m), b'')"""
-    return base62.decodebytes( data[1:].replace(".x", "") )
+    return base62.decodebytes( data[1:].replace(".x", "", 5) )
 
 
 def encode_txt(data: bytes) -> str:
