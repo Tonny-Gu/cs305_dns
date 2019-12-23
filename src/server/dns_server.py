@@ -56,6 +56,7 @@ class DNSServer:
             qname = str(request.question[0].name)
             req_data = qname[:qname.rindex("." + self.domain)]
             rep_data = self.handle_request(req_data)
+            # print("send " + rep_data)
             respond.answer.append(dns.rrset.from_text(qname, 0, dns.rdataclass.IN, dns.rdatatype.TXT, rep_data))
         return respond.to_wire()
 
@@ -69,7 +70,7 @@ class DNSServer:
         if self.send.empty():
             return ".0"
         else:
-            return dns_util.encode_txt(self.send.get()) + "." + str( self.send.qsize() )
+            return dns_util.encode_txt(self.send.get()) + "." + str(self.send.qsize())
 
 
 if __name__ == '__main__':
