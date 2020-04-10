@@ -1,0 +1,120 @@
+{
+    "preset-server": {
+        "pump": {
+            "tcp": {
+                "module": "dns_tcp",
+                "config": {
+                    "mode": "server",
+                    "listen_addr": "0.0.0.0",
+                    "listen_port": 8081
+                },
+                "attach": [
+                    "gzip_dec",
+                    "tun"
+                ]
+            },
+            "tun": {
+                "module": "dns_tun",
+                "config": {
+                    "ifname": "dns_tun_s",
+                    "ip_addr": "192.168.127.3",
+                    "netmask": "255.255.255.0",
+                    "mtu": 10240
+                },
+                "attach": [
+                    "gzip_enc",
+                    "tcp"
+                ]
+            }
+        },
+        "pipe": {
+            "gzip_dec": {
+                "module": "dns_gzip",
+                "config": {
+                    "mode": "decode"
+                }
+            },
+            "gzip_enc": {
+                "module": "dns_gzip",
+                "config": {
+                    "mode": "encode"
+                }
+            }
+        }
+    },
+    "preset-client": {
+        "pump": {
+            "tcp": {
+                "module": "dns_tcp",
+                "config": {
+                    "mode": "client",
+                    "remote_addr": "192.168.1.1",
+                    "remote_port": 8081
+                },
+                "attach": [
+                    "gzip_enc",
+                    "tun"
+                ]
+            },
+            "tun": {
+                "module": "dns_tun",
+                "config": {
+                    "ifname": "dns_tun_c",
+                    "ip_addr": "192.168.127.3",
+                    "netmask": "255.255.255.0",
+                    "mtu": 10240
+                },
+                "attach": [
+                    "gzip_dec",
+                    "tcp"
+                ]
+            }
+        },
+        "pipe": {
+            "gzip_dec": {
+                "module": "dns_gzip",
+                "config": {
+                    "mode": "decode"
+                }
+            },
+            "gzip_enc": {
+                "module": "dns_gzip",
+                "config": {
+                    "mode": "encode"
+                }
+            }
+        }
+    },
+    "preset-bridge": {
+        "pump": {
+            "tcp_s": {
+                "module": "dns_tcp",
+                "config": {
+                    "mode": "server",
+                    "listen_addr": "0.0.0.0",
+                    "listen_port": 8081
+                },
+                "attach": [
+                    "tcp_c"
+                ]
+            },
+            "tcp_c": {
+                "module": "dns_tcp",
+                "config": {
+                    "mode": "client",
+                    "remote_addr": "0.0.0.0",
+                    "remote_port": 8081
+                },
+                "attach": [
+                    "tcp_s"
+                ]
+            }            
+        }
+    },
+    "__common": {
+
+    },
+    "__misc": {
+        
+    }
+}
