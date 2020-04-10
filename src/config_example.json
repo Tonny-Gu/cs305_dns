@@ -1,12 +1,12 @@
 {
-    "preset-server": {
+    "server": {
         "pump": {
             "tcp": {
                 "module": "dns_tcp",
                 "config": {
                     "mode": "server",
                     "listen_addr": "0.0.0.0",
-                    "listen_port": 8081
+                    "listen_port": 8080
                 },
                 "attach": [
                     "gzip_dec",
@@ -42,14 +42,14 @@
             }
         }
     },
-    "preset-client": {
+    "client": {
         "pump": {
             "tcp": {
                 "module": "dns_tcp",
                 "config": {
                     "mode": "client",
-                    "remote_addr": "192.168.1.1",
-                    "remote_port": 8081
+                    "remote_addr": "1.2.3.4",
+                    "remote_port": 8080
                 },
                 "attach": [
                     "gzip_enc",
@@ -85,14 +85,14 @@
             }
         }
     },
-    "preset-bridge": {
+    "bridge": {
         "pump": {
             "tcp_s": {
                 "module": "dns_tcp",
                 "config": {
                     "mode": "server",
                     "listen_addr": "0.0.0.0",
-                    "listen_port": 8081
+                    "listen_port": 8080
                 },
                 "attach": [
                     "tcp_c"
@@ -102,8 +102,8 @@
                 "module": "dns_tcp",
                 "config": {
                     "mode": "client",
-                    "remote_addr": "0.0.0.0",
-                    "remote_port": 8081
+                    "remote_addr": "5.6.7.8",
+                    "remote_port": 8080
                 },
                 "attach": [
                     "tcp_s"
