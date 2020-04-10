@@ -7,6 +7,7 @@ from dns_model import *
 
 class DNS_TUN(DNS_PUMP):
     def __init__(self, config: dict = {}):
+        super().__init__()
         self.tun = pytun.TunTapDevice(name=config["ifname"], flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
         self.tun.addr = config["ip_addr"]
         self.tun.netmask = config["netmask"]

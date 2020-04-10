@@ -7,7 +7,8 @@ class DNS_PIPE(metaclass=ABCMeta):
         pass
 
 class DNS_PUMP(DNS_PIPE):
-    pipes: List[DNS_PIPE] = []
+    def __init__(self):
+        self.pipes: List[DNS_PIPE] = []
     
     def attach(self, pipe:DNS_PIPE):
         self.pipes.append(pipe)

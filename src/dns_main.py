@@ -32,7 +32,6 @@ class DNS_NODE:
         components = {}
         components.update(pipes)
         components.update(pumps)
-        print(components)
         for key in config["pump"]:
             pump: DNS_PUMP = pumps[key]
             for pipe in config["pump"][key]["attach"]:

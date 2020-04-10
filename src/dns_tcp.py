@@ -5,6 +5,7 @@ from dns_model import *
 
 class DNS_TCP_CLIENT(DNS_PUMP):
     def __init__(self, config: dict = {}):
+        super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((config["remote_addr"], config["remote_port"]))
         self.sock.settimeout(2.0)
@@ -18,6 +19,8 @@ class DNS_TCP_CLIENT(DNS_PUMP):
             try:
                 data: bytes = self.sock.recv(65535)
                 self.transfer(data)
+            except socket.timeout as e:
+                pass
             except Exception as e:
                 print(e)
     
@@ -26,6 +29,7 @@ class DNS_TCP_CLIENT(DNS_PUMP):
 
 class DNS_TCP_SERVER(DNS_PUMP):
     def __init__(self, config: dict = {}):
+        super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind((config["listen_addr"], config["listen_port"]))
         self.sock.listen(1)
@@ -44,6 +48,8 @@ class DNS_TCP_SERVER(DNS_PUMP):
                     data: bytes = conn.recv(65535)
                     if not data: break
                     self.transfer(data)
+            except socket.timeout as e:
+                pass
             except Exception as e:
                 print(e)
     
