@@ -57,6 +57,7 @@ class DNS_TCP_SERVER(DNS_PUMP):
         while True:
             try:
                 conn, addr = self.sock.accept()
+                self.log.info("Accepted " + str(addr))
                 thread = Thread(target=self.client_handler, args=(conn, addr))
                 thread.setDaemon(True)
                 thread.start()
