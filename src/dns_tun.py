@@ -7,7 +7,7 @@ from dns_model import *
 
 class DNS_TUN(DNS_PUMP):
     def __init__(self, config: dict = {}):
-        super().__init__()
+        super().__init__(config)
         self.tun = pytun.TunTapDevice(name=config["ifname"], flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
         self.tun.addr = config["ip_addr"]
         self.tun.netmask = config["netmask"]
@@ -22,9 +22,9 @@ class DNS_TUN(DNS_PUMP):
         while True:
             try:
                 data: bytes = self.tun.read(self.tun.mtu)
-                self.transfer(data)
+                self.transmit(data)
             except Exception as e:
-                print(e)
+                self.log.error(e)
     
     def invoke(self, data: bytes) -> bytes:
         self.tun.write(data)

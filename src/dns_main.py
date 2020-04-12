@@ -43,12 +43,27 @@ class DNS_NODE:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--preset", type=str, default="", help="select a predefined preset")
-    parser.add_argument("-c", "--config-file", type=str, default="config.json", help="select the path to the config file")
+    parser.add_argument("-c", "--config-file", type=str, default="config.json", help="select the path to the config file. Default: ./config.json")
+    parser.add_argument("-l", "--log-level", type=str, choices=["debug", "info", "warn", "error", "fatal"], default="info", help="set log level. Most verbose: debug. Default: info")
     args = parser.parse_args()
+
     config = DNS_CONFIG(json_path=args.config_file, preset=args.preset).get_config()
+
+    loglevels = {
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+        "warn": logging.WARN,
+        "error": logging.ERROR,
+        "fatal": logging.FATAL
+    }
+    logging.basicConfig(level=loglevels[ args.log_level ],
+        format="%(asctime)s [%(levelname)s] (%(threadName)s @ %(filename)s:%(lineno)d) %(message)s")
+    log = logging.getLogger()
+    log.info("Project DNS v2 Started.")
+
     node = DNS_NODE(config)
 
     killer = DNS_KILLER()
     while not killer.kill_now:
         time.sleep(1)
-    print("Terminated.")
+    log.info("Project DNS v2 Terminated.")
