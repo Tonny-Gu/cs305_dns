@@ -8,7 +8,8 @@ class DNS_BASE62_ENC(DNS_PIPE):
     def invoke(self, data: bytes) -> bytes:
         ret = b''
         try:
-            ret = base62.encodebytes(data)
+            text:str = base62.encodebytes(data)
+            ret = text.encode(encoding="ascii")
         except Exception as e:
             self.log.error(e)
         return ret
