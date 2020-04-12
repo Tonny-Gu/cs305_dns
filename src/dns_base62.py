@@ -21,7 +21,8 @@ class DNS_BASE62_DEC(DNS_PIPE):
     def invoke(self, data: bytes) -> bytes:
         ret = b''
         try:
-            ret = base62.decodebytes(data)
+            text:str = data.decode(encoding="ascii")
+            ret = base62.decodebytes(text)
         except Exception as e:
             self.log.error(e)
         return ret
