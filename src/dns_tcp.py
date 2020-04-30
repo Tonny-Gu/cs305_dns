@@ -41,7 +41,7 @@ class DNS_TCP_CLIENT(DNS_PUMP):
         # self.log.info("Terminated")
     
     def invoke(self, data: bytes) -> bytes:
-        if self.conn and not self.terminate: self.sock.send(data)
+        if not self.terminate: self.sock.send(data)
         return data
     
     def terminate(self):
