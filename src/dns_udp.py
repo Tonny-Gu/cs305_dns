@@ -29,7 +29,7 @@ class DNS_UDP(DNS_PUMP):
     
     def invoke(self, data: bytes) -> bytes:
         config = self.config
-        if not self.terminate: self.sock.sendto(data, (config["remote_addr"], config["remote_port"]))
+        if not self.isTerminated: self.sock.sendto(data, (config["remote_addr"], config["remote_port"]))
         return data
     
     def terminate(self):
