@@ -8,7 +8,7 @@ class DNS_TCP_CLIENT(DNS_PUMP):
     def __init__(self, config: dict = {}):
         super().__init__(config)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.settimeout(2.0)
+        # self.sock.settimeout(2.0)
         self.connect()
 
         self.thread = Thread(target=self.thread_main)
@@ -16,7 +16,7 @@ class DNS_TCP_CLIENT(DNS_PUMP):
         self.thread.start()
     
     def connect(self):
-        while True:
+        while not self.isTerminated:
             try:
                 self.sock.connect((self.config["remote_addr"], self.config["remote_port"]))
             except Exception as e:
@@ -26,7 +26,7 @@ class DNS_TCP_CLIENT(DNS_PUMP):
                 break
     
     def thread_main(self):
-        while True:
+        while not self.isTerminated:
             try:
                 data: bytes = self.sock.recv(65535)
                 if data: self.forward(data)
@@ -38,10 +38,16 @@ class DNS_TCP_CLIENT(DNS_PUMP):
                 self.connect()
             except Exception as e:
                 self.log.error(e)
+        # self.log.info("Terminated")
     
     def invoke(self, data: bytes) -> bytes:
-        self.sock.send(data)
+        if self.conn and not self.terminate: self.sock.send(data)
         return data
+    
+    def terminate(self):
+        super().terminate()
+        self.sock.shutdown(socket.SHUT_RDWR)
+        self.sock.close()
 
 class DNS_TCP_SERVER(DNS_PUMP):
     def __init__(self, config: dict = {}):
@@ -49,14 +55,14 @@ class DNS_TCP_SERVER(DNS_PUMP):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind((config["listen_addr"], config["listen_port"]))
         self.sock.listen(1)
-        self.sock.settimeout(2.0)
+        # self.sock.settimeout(2.0)
 
         self.thread = Thread(target=self.thread_main)
         self.thread.setDaemon(True)
         self.thread.start()
 
     def thread_main(self):
-        while True:
+        while not self.isTerminated:
             try:
                 conn, addr = self.sock.accept()
                 self.log.info("Accepted " + str(addr))
@@ -67,20 +73,27 @@ class DNS_TCP_SERVER(DNS_PUMP):
                 pass
             except Exception as e:
                 self.log.error(e)
+        # self.log.info("Terminated")
     
     def client_handler(self, conn:socket, addr):
         self.conn, self.addr = conn, addr
-        while True:
+        while not self.isTerminated:
             try:
                 data: bytes = conn.recv(65535)
                 if not data: break
                 self.forward(data)
             except Exception as e:
                 self.log.error(e)
+        # self.log.info("Terminated")
     
     def invoke(self, data: bytes) -> bytes:
-        if self.conn: self.conn.send(data)
+        if self.conn and not self.terminate: self.conn.send(data)
         return data
+    
+    def terminate(self):
+        super().terminate()
+        self.sock.shutdown(socket.SHUT_RDWR)
+        self.sock.close()
 
 class DNS_TCP_FACTORY(DNS_FACTORY):
     def get_component(self, config: dict = {}) -> DNS_PUMP:

@@ -19,7 +19,7 @@ class DNS_TUN(DNS_PUMP):
         self.thread.start()
 
     def thread_main(self):
-        while True:
+        while not self.isTerminated:
             try:
                 data: bytes = self.tun.read(self.tun.mtu)
                 self.forward(data)
@@ -27,8 +27,12 @@ class DNS_TUN(DNS_PUMP):
                 self.log.error(e)
     
     def invoke(self, data: bytes) -> bytes:
-        self.tun.write(data)
+        if not self.isTerminated: self.tun.write(data)
         return data
+    
+    def terminate(self):
+        super().terminate()
+        self.tun.close()
 
 class DNS_TUN_FACTORY(DNS_FACTORY):
     def get_component(self, config: dict = {}) -> DNS_PUMP:

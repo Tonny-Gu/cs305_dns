@@ -13,6 +13,8 @@ class DNS_BASE62_ENC(DNS_PIPE):
         except Exception as e:
             self.log.error(e)
         return ret
+    
+    def terminate(self): pass
 
 class DNS_BASE62_DEC(DNS_PIPE):
     def __init__(self, config: dict = {}):
@@ -26,6 +28,8 @@ class DNS_BASE62_DEC(DNS_PIPE):
         except Exception as e:
             self.log.error(e)
         return ret
+    
+    def terminate(self): pass
 
 class DNS_BASE62_FACTORY(DNS_FACTORY):
     def get_component(self, config: dict = {}) -> DNS_PIPE:

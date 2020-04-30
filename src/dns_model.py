@@ -12,10 +12,15 @@ class DNS_PIPE(metaclass=ABCMeta):
     def invoke(self, data: bytes) -> bytes:
         pass
 
+    @abstractmethod
+    def terminate(self):
+        pass
+
 class DNS_PUMP(DNS_PIPE):
     def __init__(self, config: dict):
         super().__init__(config)
         self.pipes: List[DNS_PIPE] = []
+        self.isTerminated = False
     
     def attach(self, pipe:DNS_PIPE):
         self.pipes.append(pipe)
@@ -26,6 +31,9 @@ class DNS_PUMP(DNS_PIPE):
             data_out: bytes = pipe.invoke(data_in)
             if not data_out: break
             data_in = data_out
+    
+    def terminate(self):
+        self.isTerminated = True
 
 class DNS_FACTORY(metaclass=ABCMeta):
     @abstractmethod

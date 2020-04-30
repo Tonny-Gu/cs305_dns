@@ -25,6 +25,10 @@ class DNS_NODE:
             component:DNS_PIPE = factory_meta().get_component(config[key]["config"])
             ret[key] = component
         return ret
+    
+    def terminate(self):
+        for component in self.components.values():
+            component.terminate()
 
     def __init__(self, config: dict):
         pumps = self.instantiate_components(config["pump"]) if "pump" in config else {}
@@ -38,6 +42,7 @@ class DNS_NODE:
                 pump.attach( components[pipe] )
 
         self.config = config
+        self.components = components
         
         
 if __name__ == '__main__':
@@ -66,4 +71,7 @@ if __name__ == '__main__':
     killer = DNS_KILLER()
     while not killer.kill_now:
         time.sleep(1)
+        
+    node.terminate()
+    time.sleep(1)
     log.info("Project DNS v2 Terminated.")
