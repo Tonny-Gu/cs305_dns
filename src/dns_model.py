@@ -7,7 +7,7 @@ class DNS_PIPE(metaclass=ABCMeta):
         self.config = config
         self.log = logging.getLogger()
         self.log.info("Module %s Init." % self.__class__.__name__)
-        
+
     @abstractmethod
     def invoke(self, data: bytes) -> bytes:
         pass
@@ -20,7 +20,7 @@ class DNS_PUMP(DNS_PIPE):
     def attach(self, pipe:DNS_PIPE):
         self.pipes.append(pipe)
     
-    def transmit(self, data:bytes):
+    def forward(self, data:bytes):
         data_in = data
         for pipe in self.pipes:
             data_out: bytes = pipe.invoke(data_in)

@@ -29,7 +29,8 @@ class DNS_TCP_CLIENT(DNS_PUMP):
         while True:
             try:
                 data: bytes = self.sock.recv(65535)
-                self.transmit(data)
+                if data: self.forward(data)
+                else: raise(socket.error)
             except socket.timeout as e:
                 pass
             except socket.error as e:
@@ -40,6 +41,7 @@ class DNS_TCP_CLIENT(DNS_PUMP):
     
     def invoke(self, data: bytes) -> bytes:
         self.sock.send(data)
+        return data
 
 class DNS_TCP_SERVER(DNS_PUMP):
     def __init__(self, config: dict = {}):
@@ -69,12 +71,16 @@ class DNS_TCP_SERVER(DNS_PUMP):
     def client_handler(self, conn:socket, addr):
         self.conn, self.addr = conn, addr
         while True:
-            data: bytes = conn.recv(65535)
-            if not data: break
-            self.transmit(data)
+            try:
+                data: bytes = conn.recv(65535)
+                if not data: break
+                self.forward(data)
+            except Exception as e:
+                self.log.error(e)
     
     def invoke(self, data: bytes) -> bytes:
         if self.conn: self.conn.send(data)
+        return data
 
 class DNS_TCP_FACTORY(DNS_FACTORY):
     def get_component(self, config: dict = {}) -> DNS_PUMP:

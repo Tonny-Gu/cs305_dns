@@ -22,12 +22,13 @@ class DNS_TUN(DNS_PUMP):
         while True:
             try:
                 data: bytes = self.tun.read(self.tun.mtu)
-                self.transmit(data)
+                self.forward(data)
             except Exception as e:
                 self.log.error(e)
     
     def invoke(self, data: bytes) -> bytes:
         self.tun.write(data)
+        return data
 
 class DNS_TUN_FACTORY(DNS_FACTORY):
     def get_component(self, config: dict = {}) -> DNS_PUMP:
