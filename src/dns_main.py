@@ -27,8 +27,8 @@ class DNS_NODE:
         return ret
 
     def __init__(self, config: dict):
-        pumps = self.instantiate_components(config["pump"])
-        pipes = self.instantiate_components(config["pipe"])
+        if "pump" in config: pumps = self.instantiate_components(config["pump"])
+        if "pipe" in config: pipes = self.instantiate_components(config["pipe"])
         components = {}
         components.update(pipes)
         components.update(pumps)
